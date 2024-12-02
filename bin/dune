@@ -1,0 +1,9 @@
+(executable
+ (public_name day1)
+ (name day1)
+ (libraries shared))
+
+(executable
+ (public_name day2)
+ (name day2)
+ (libraries shared))
