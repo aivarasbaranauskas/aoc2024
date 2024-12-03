@@ -7,3 +7,8 @@
  (public_name day2)
  (name day2)
  (libraries shared))
+
+(executable
+ (public_name day3)
+ (name day3)
+ (libraries shared str))
