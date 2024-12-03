@@ -1,5 +1,11 @@
 let file = "inputs/day2/input.txt"
 
+let read_input () =
+  let parse_line line =
+    List.map int_of_string @@ String.split_on_char ' ' line
+  in
+  List.map parse_line @@ Shared.File.read_lines file
+
 let is_safe levels =
   let rec is_rising levels =
     match levels with
@@ -22,20 +28,14 @@ let is_safe_2 levels =
   let is_falling levels = is_rising @@ List.rev levels in
   is_rising levels false true || is_falling levels false true
 
-let () =
-  let lines = Shared.File.read_lines file in
-  let num_lines =
-    List.map
-      (fun line -> List.map int_of_string @@ String.split_on_char ' ' line)
-      lines
-  in
-  let safe_unsafe = List.map is_safe num_lines in
-  let result_pt1 =
-    List.fold_left (fun acc a -> if a then acc + 1 else acc) 0 safe_unsafe
-  in
-  let safe_unsafe_2 = List.map is_safe_2 num_lines in
-  let result_pt2 =
-    List.fold_left (fun acc a -> if a then acc + 1 else acc) 0 safe_unsafe_2
-  in
+let count_true l = List.fold_left (fun acc a -> if a then acc + 1 else acc) 0 l
 
-  Printf.printf "Part 1: %d\nPart 2: %d\n" result_pt1 result_pt2
+let part1 () =
+  let safe_unsafe = List.map is_safe (read_input ()) in
+  count_true safe_unsafe
+
+let part2 () =
+  let safe_unsafe_2 = List.map is_safe_2 (read_input ()) in
+  count_true safe_unsafe_2
+
+let () = Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())

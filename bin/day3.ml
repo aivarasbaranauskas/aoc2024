@@ -25,15 +25,14 @@ let collect_enabled_multiplications s =
   let splits = Str.full_split r s in
 
   let enabled = ref true in
-  List.flatten
-  @@ List.map
-       (fun s ->
-         match s with
-         | Str.Delim d ->
-             enabled := d = "do()";
-             []
-         | Str.Text ss -> if !enabled then collect_multiplications ss else [])
-       splits
+  let collect_if_enabled s =
+    match s with
+    | Str.Delim d ->
+        enabled := d = "do()";
+        []
+    | Str.Text ss -> if !enabled then collect_multiplications ss else []
+  in
+  List.flatten @@ List.map collect_if_enabled splits
 
 let () =
   let input = Shared.File.read_all file in
