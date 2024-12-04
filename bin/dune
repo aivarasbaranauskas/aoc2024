@@ -1,4 +1,8 @@
 (executable
+ (public_name new_day)
+ (name new_day))
+
+(executable
  (public_name day1)
  (name day1)
  (libraries shared))
