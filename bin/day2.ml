@@ -4,7 +4,7 @@ let read_input () =
   let parse_line line =
     List.map int_of_string @@ String.split_on_char ' ' line
   in
-  List.map parse_line @@ Shared.File.read_lines file
+  List.map parse_line @@ Shared.F.read_lines file
 
 let is_safe levels =
   let rec is_rising levels =

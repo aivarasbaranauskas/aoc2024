@@ -10,6 +10,10 @@ let read_lines name =
   in
   loop []
 
+let read_lines_to_array name =
+  let lines = read_lines name in
+  Array.init (List.length lines) (List.nth lines)
+
 let read_all name =
   let ch = open_in name in
   let s = really_input_string ch (in_channel_length ch) in

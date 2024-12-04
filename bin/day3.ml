@@ -35,7 +35,7 @@ let collect_enabled_multiplications s =
   List.flatten @@ List.map collect_if_enabled splits
 
 let () =
-  let input = Shared.File.read_all file in
+  let input = Shared.F.read_all file in
   let result_pt1 =
     Shared.L.sum
     @@ List.map (fun (a, b) -> a * b) (collect_multiplications input)

@@ -5,7 +5,7 @@ let split_by_three_spaces line =
   (List.nth spl 0, List.nth spl 3)
 
 let read_input () =
-  let lines = Shared.File.read_lines file in
+  let lines = Shared.F.read_lines file in
   let a, b = List.split @@ List.map split_by_three_spaces lines in
   ( Shared.L.sort @@ List.map int_of_string a,
     Shared.L.sort @@ List.map int_of_string b )
