@@ -30,5 +30,3 @@ let () =
   let oc = open_out_gen [Open_wronly; Open_append; Open_creat; Open_text] 0o666 "bin/dune" in
   Printf.fprintf oc dune_entry_template !day !day;
   close_out oc;
-
-  Sys.mkdir (Printf.sprintf "inputs/day%s" !day) 755;
