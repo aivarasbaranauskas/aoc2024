@@ -3,3 +3,5 @@
 (package
  (name year_2024)
  (depends ocaml dune))
+
+(map_workspace_root false)

@@ -26,3 +26,8 @@
  (public_name day5)
  (name day5)
  (libraries shared))
+
+(executable
+ (public_name day6)
+ (name day6)
+ (libraries shared))

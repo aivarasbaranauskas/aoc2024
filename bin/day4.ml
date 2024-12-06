@@ -1,8 +1,5 @@
 let file = "inputs/day4/input.txt"
-
-let read_input () =
-  let lines = Shared.F.read_lines_to_array file in
-  Array.map Shared.S.explode_to_array lines
+let read_input () = Shared.F.read_char_matrix_2d_array file
 
 let count_from_direction m row col row_d col_d =
   let max_row = row + (3 * row_d) in

@@ -17,3 +17,7 @@ let read_all name =
   let s = really_input_string ch (in_channel_length ch) in
   close_in ch;
   s
+
+let read_char_matrix_2d_array name =
+  let lines = read_lines_to_array name in
+  Array.map S.explode_to_array lines
