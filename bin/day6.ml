@@ -17,16 +17,18 @@ let find_guard m =
   | Some x -> x
   | None -> raise (Failure "guard not found")
 
-module IntPairs = struct
+module IntPair = struct
   type t = int * int
 
   let compare (x0, y0) (x1, y1) =
     match Stdlib.compare x0 x1 with 0 -> Stdlib.compare y0 y1 | c -> c
+
+  let add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
 end
 
-module PairsSet = Set.Make (IntPairs)
+module PairsSet = Set.Make (IntPair)
 
-module IntQuads = struct
+module IntQuad = struct
   type t = int * int * int * int
 
   let compare (a0, b0, c0, d0) (a1, b1, c1, d1) =
@@ -39,7 +41,7 @@ module IntQuads = struct
     | x -> x
 end
 
-module QuadsSet = Set.Make (IntQuads)
+module QuadsSet = Set.Make (IntQuad)
 
 let next_direction current_direction =
   match current_direction with
@@ -54,21 +56,16 @@ let part1 () =
   let guard_row, guard_col = find_guard m in
   Array.set m.(guard_row) guard_col '.';
   let h, w = (Array.length m, Array.length m.(0)) in
-  let rec walk (guard_row, guard_col) (direction_r, direction_c) visited =
-    let next_row, next_col =
-      (guard_row + direction_r, guard_col + direction_c)
-    in
+  let rec walk guard direction visited =
+    let next_row, next_col = IntPair.add guard direction in
     if next_row < 0 || next_row >= h || next_col < 0 || next_col >= w then
-      PairsSet.add (guard_row, guard_col) visited
+      PairsSet.add guard visited (* return all visited from here *)
     else
       match m.(next_row).(next_col) with
       | '.' ->
-          walk (next_row, next_col) (direction_r, direction_c)
-            (PairsSet.add (guard_row, guard_col) visited)
-      | '#' ->
-          walk (guard_row, guard_col)
-            (next_direction (direction_r, direction_c))
-            visited
+          let visited = PairsSet.add guard visited in
+          walk (next_row, next_col) direction visited
+      | '#' -> walk guard (next_direction direction) visited
       | _ -> raise (Failure "lost")
   in
   let visited = walk (guard_row, guard_col) (-1, 0) PairsSet.empty in
@@ -98,7 +95,9 @@ let does_make_a_loop m (obsticle_r, obsticle_c) (init_guard_row, init_guard_col)
           then true
           else
             walk (next_row, next_col) (direction_r, direction_c)
-              (QuadsSet.add (guard_row, guard_col, direction_r, direction_c) visited)
+              (QuadsSet.add
+                 (guard_row, guard_col, direction_r, direction_c)
+                 visited)
       | '#' ->
           walk (guard_row, guard_col)
             (next_direction (direction_r, direction_c))
@@ -123,7 +122,8 @@ let part2 () =
     else
       match m.(next_row).(next_col) with
       | '.' ->
-        Printf.printf "%d: %d %d\n%!" !ct guard_row guard_col; ct := !ct + 1;
+          Printf.printf "%d: %d %d\n%!" !ct guard_row guard_col;
+          ct := !ct + 1;
 
           let obstacle_options =
             if
@@ -135,7 +135,9 @@ let part2 () =
           in
 
           walk (next_row, next_col) (direction_r, direction_c)
-            (QuadsSet.add (guard_row, guard_col, direction_r, direction_c) visited)
+            (QuadsSet.add
+               (guard_row, guard_col, direction_r, direction_c)
+               visited)
             obstacle_options
       | '#' ->
           walk (guard_row, guard_col)
@@ -149,5 +151,4 @@ let part2 () =
 
   List.length @@ PairsSet.elements obstacle_options
 
-let () = 
-  Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())
+let () = Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())
