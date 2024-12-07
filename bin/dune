@@ -31,3 +31,8 @@
  (public_name day6)
  (name day6)
  (libraries shared))
+
+(executable
+ (public_name day7)
+ (name day7)
+ (libraries shared))
