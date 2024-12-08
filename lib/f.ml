@@ -21,3 +21,7 @@ let read_all name =
 let read_char_matrix_2d_array name =
   let lines = read_lines_to_array name in
   Array.map S.explode_to_array lines
+
+let read_char_matrix_2d_list name =
+  let lines = read_lines name in
+  List.map S.explode_to_list lines
