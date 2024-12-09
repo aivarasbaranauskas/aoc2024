@@ -18,6 +18,10 @@ let read_all name =
   close_in ch;
   s
 
+let read_char_array name = S.explode_to_array @@ read_all name
+
+let read_char_list name = S.explode_to_list @@ read_all name
+
 let read_char_matrix_2d_array name =
   let lines = read_lines_to_array name in
   Array.map S.explode_to_array lines
