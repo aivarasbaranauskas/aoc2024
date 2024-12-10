@@ -17,32 +17,6 @@ let find_guard m =
   | Some x -> x
   | None -> raise (Failure "guard not found")
 
-module IntPair = struct
-  type t = int * int
-
-  let compare (x0, y0) (x1, y1) =
-    match Stdlib.compare x0 x1 with 0 -> Stdlib.compare y0 y1 | c -> c
-
-  let add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
-end
-
-module PairsSet = Set.Make (IntPair)
-
-module IntQuad = struct
-  type t = int * int * int * int
-
-  let compare (a0, b0, c0, d0) (a1, b1, c1, d1) =
-    match Stdlib.compare a0 a1 with
-    | 0 -> (
-        match Stdlib.compare b0 b1 with
-        | 0 -> (
-            match Stdlib.compare c0 c1 with 0 -> Stdlib.compare d0 d1 | x -> x)
-        | x -> x)
-    | x -> x
-end
-
-module QuadsSet = Set.Make (IntQuad)
-
 let next_direction current_direction =
   match current_direction with
   | -1, 0 -> (0, 1)
@@ -57,19 +31,21 @@ let part1 () =
   Array.set m.(guard_row) guard_col '.';
   let h, w = (Array.length m, Array.length m.(0)) in
   let rec walk guard direction visited =
-    let next_row, next_col = IntPair.add guard direction in
+    let next_row, next_col = Shared.Sets.IntPair.add guard direction in
     if next_row < 0 || next_row >= h || next_col < 0 || next_col >= w then
-      PairsSet.add guard visited (* return all visited from here *)
+      Shared.Sets.PairsSet.add guard visited (* return all visited from here *)
     else
       match m.(next_row).(next_col) with
       | '.' ->
-          let visited = PairsSet.add guard visited in
+          let visited = Shared.Sets.PairsSet.add guard visited in
           walk (next_row, next_col) direction visited
       | '#' -> walk guard (next_direction direction) visited
       | _ -> raise (Failure "lost")
   in
-  let visited = walk (guard_row, guard_col) (-1, 0) PairsSet.empty in
-  List.length @@ PairsSet.elements visited
+  let visited =
+    walk (guard_row, guard_col) (-1, 0) Shared.Sets.PairsSet.empty
+  in
+  List.length @@ Shared.Sets.PairsSet.elements visited
 
 let does_make_a_loop m (obsticle_r, obsticle_c) (init_guard_row, init_guard_col)
     =
@@ -87,7 +63,7 @@ let does_make_a_loop m (obsticle_r, obsticle_c) (init_guard_row, init_guard_col)
       match m.(next_row).(next_col) with
       | '.' ->
           if
-            QuadsSet.exists
+            Shared.Sets.QuadsSet.exists
               (fun (a, b, c, d) ->
                 guard_row = a && guard_col = b && direction_r = c
                 && direction_c = d)
@@ -95,7 +71,7 @@ let does_make_a_loop m (obsticle_r, obsticle_c) (init_guard_row, init_guard_col)
           then true
           else
             walk (next_row, next_col) (direction_r, direction_c)
-              (QuadsSet.add
+              (Shared.Sets.QuadsSet.add
                  (guard_row, guard_col, direction_r, direction_c)
                  visited)
       | '#' ->
@@ -104,7 +80,7 @@ let does_make_a_loop m (obsticle_r, obsticle_c) (init_guard_row, init_guard_col)
             visited
       | _ -> raise (Failure "lost")
   in
-  walk (init_guard_row, init_guard_col) (-1, 0) QuadsSet.empty
+  walk (init_guard_row, init_guard_col) (-1, 0) Shared.Sets.QuadsSet.empty
 
 let part2 () =
   let m = read_input () in
@@ -130,12 +106,12 @@ let part2 () =
               (next_row != init_guard_row || init_guard_col != next_col)
               && does_make_a_loop m (next_row, next_col)
                    (init_guard_row, init_guard_col)
-            then PairsSet.add (next_row, next_col) obstacle_options
+            then Shared.Sets.PairsSet.add (next_row, next_col) obstacle_options
             else obstacle_options
           in
 
           walk (next_row, next_col) (direction_r, direction_c)
-            (QuadsSet.add
+            (Shared.Sets.QuadsSet.add
                (guard_row, guard_col, direction_r, direction_c)
                visited)
             obstacle_options
@@ -146,9 +122,11 @@ let part2 () =
       | _ -> raise (Failure "lost")
   in
   let obstacle_options =
-    walk (init_guard_row, init_guard_col) (-1, 0) QuadsSet.empty PairsSet.empty
+    walk
+      (init_guard_row, init_guard_col)
+      (-1, 0) Shared.Sets.QuadsSet.empty Shared.Sets.PairsSet.empty
   in
 
-  List.length @@ PairsSet.elements obstacle_options
+  List.length @@ Shared.Sets.PairsSet.elements obstacle_options
 
 let () = Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())

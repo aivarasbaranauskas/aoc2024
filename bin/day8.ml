@@ -29,47 +29,39 @@ let read_input () =
   let grouped_antenas = List.fold_left group_antenas [] sorted_antenas in
   (grouped_antenas, map_size)
 
-module IntPair = struct
-  type t = int * int
-
-  let compare (x0, y0) (x1, y1) =
-    match Stdlib.compare x0 x1 with 0 -> Stdlib.compare y0 y1 | c -> c
-
-  let add (x0, y0) (x1, y1) = (x0 + x1, y0 + y1)
-  let rem (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
-  let mul (x0, y0) (x1, y1) = (x0 * x1, y0 * y1)
-end
-
-module PairsSet = Set.Make (IntPair)
-
 let solve resolver =
   let grouped_antenas, map_size = read_input () in
   let grouped_antinodes = List.map (resolver map_size) grouped_antenas in
   let antinodes =
-    List.fold_left PairsSet.union PairsSet.empty grouped_antinodes
+    List.fold_left Shared.Sets.PairsSet.union Shared.Sets.PairsSet.empty
+      grouped_antinodes
   in
-  List.length @@ PairsSet.to_list antinodes
+  List.length @@ Shared.Sets.PairsSet.to_list antinodes
 
 let generate_antinodes map_height map_width coord1 coord2 =
-  let the_diff = IntPair.rem coord1 coord2 in
-  PairsSet.(
+  let the_diff = Shared.Sets.IntPair.rem coord1 coord2 in
+  Shared.Sets.PairsSet.(
     empty
-    |> add (IntPair.rem coord2 the_diff)
-    |> add (IntPair.add coord1 the_diff)
+    |> add (Shared.Sets.IntPair.rem coord2 the_diff)
+    |> add (Shared.Sets.IntPair.add coord1 the_diff)
     |> filter (fun (r, c) ->
            r >= 0 && c >= 0 && r < map_height && c < map_width))
 
 let generate_antinodes_2 map_height map_width coord1 coord2 =
-  let the_diff = IntPair.rem coord1 coord2 in
+  let the_diff = Shared.Sets.IntPair.rem coord1 coord2 in
   let rec do_gen acc (r, c) offset =
     if r >= 0 && c >= 0 && r < map_height && c < map_width then
-      do_gen (PairsSet.add (r, c) acc) (IntPair.add (r, c) offset) offset
+      do_gen
+        (Shared.Sets.PairsSet.add (r, c) acc)
+        (Shared.Sets.IntPair.add (r, c) offset)
+        offset
     else acc
   in
-  PairsSet.(
+  Shared.Sets.PairsSet.(
     union
-      (do_gen PairsSet.empty coord1 the_diff)
-      (do_gen PairsSet.empty coord2 (IntPair.mul the_diff (-1, -1))))
+      (do_gen Shared.Sets.PairsSet.empty coord1 the_diff)
+      (do_gen Shared.Sets.PairsSet.empty coord2
+         (Shared.Sets.IntPair.mul the_diff (-1, -1))))
 
 let resolve_antinodes generate_antinodes (map_height, map_width) (_, all_coords)
     =
@@ -78,7 +70,7 @@ let resolve_antinodes generate_antinodes (map_height, map_width) (_, all_coords)
     | [] -> antinodes
     | coord2 :: t ->
         let antinodes =
-          PairsSet.union antinodes
+          Shared.Sets.PairsSet.union antinodes
             (generate_antinodes map_height map_width coord1 coord2)
         in
         collect2 antinodes coord1 t
@@ -88,7 +80,7 @@ let resolve_antinodes generate_antinodes (map_height, map_width) (_, all_coords)
     | [] -> antinodes
     | coord :: t -> collect1 (collect2 antinodes coord t) t
   in
-  collect1 PairsSet.empty all_coords
+  collect1 Shared.Sets.PairsSet.empty all_coords
 
 let part1 () = solve (resolve_antinodes generate_antinodes)
 let part2 () = solve (resolve_antinodes generate_antinodes_2)

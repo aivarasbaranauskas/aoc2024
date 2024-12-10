@@ -19,7 +19,6 @@ let read_all name =
   s
 
 let read_char_array name = S.explode_to_array @@ read_all name
-
 let read_char_list name = S.explode_to_list @@ read_all name
 
 let read_char_matrix_2d_array name =
