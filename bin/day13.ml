@@ -19,22 +19,28 @@ Prize: X=\([0-9]+\), Y=\([0-9]+\)|}
   @@ Shared.F.read_all file
 
 let find_cheapest ((ax, ay), (bx, by), (x, y)) =
-  let top = ax*y - ay*x in
-  let bot = ax*by - bx*ay in
-  let price = if top mod bot != 0 then 0 else 
-    (
+  let top = (ax * y) - (ay * x) in
+  let bot = (ax * by) - (bx * ay) in
+  let price =
+    if top mod bot != 0 then 0
+    else
       let b = top / bot in
-      let top2 = x - bx*b in
-      if top2 mod ax != 0 then 0 else
-      (let a = top2/ax in
-      a*3+b)
-    )
+      let top2 = x - (bx * b) in
+      if top2 mod ax != 0 then 0
+      else
+        let a = top2 / ax in
+        (a * 3) + b
   in
   price
 
 let part1 () = Shared.L.sum @@ List.map find_cheapest input
-let part2 () = 
-  let modified_input = List.map (fun (a, b, (x, y)) -> (a, b, (x+10000000000000, y+10000000000000))) input in
+
+let part2 () =
+  let modified_input =
+    List.map
+      (fun (a, b, (x, y)) -> (a, b, (x + 10000000000000, y + 10000000000000)))
+      input
+  in
   Shared.L.sum @@ List.map find_cheapest modified_input
 
 let () = Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())

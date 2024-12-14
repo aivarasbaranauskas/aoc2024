@@ -30,4 +30,8 @@ let () =
       0o666 "bin/dune"
   in
   Printf.fprintf oc dune_entry_template !day !day;
-  close_out oc
+  close_out oc;
+
+  let _ = Sys.command (Printf.sprintf "mkdir -p inputs/day%s" !day) in
+  let _ = Sys.command (Printf.sprintf "touch inputs/day%s/input.txt" !day) in
+  ()
