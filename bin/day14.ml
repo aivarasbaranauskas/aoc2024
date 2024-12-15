@@ -27,8 +27,8 @@ let part1 () =
           else if y > qy then (q1, q2 + 1, q3, q4)
           else (q1, q2, q3, q4)
         else if x > qx then
-          if y < qy then (q1, q2, q3+1, q4)
-          else if y > qy then (q1, q2, q3, q4+1)
+          if y < qy then (q1, q2, q3 + 1, q4)
+          else if y > qy then (q1, q2, q3, q4 + 1)
           else (q1, q2, q3, q4)
         else (q1, q2, q3, q4))
       (0, 0, 0, 0) simulated
@@ -37,25 +37,34 @@ let part1 () =
 
 module PairsMap = Map.Make (Shared.Sets.IntPair)
 
-let part2 () = 
+let part2 () =
   let bots = read_input () in
-  let lim_x, lim_y = 101, 103 in
+  let lim_x, lim_y = (101, 103) in
   let rec draw_and_ask n =
     let bots_now = List.map (simulate lim_x lim_y n) bots in
-    let grouped = List.fold_left (fun acc bot -> if PairsMap.mem bot acc then PairsMap.add bot (1 + PairsMap.find bot acc) acc else PairsMap.add bot 1 acc) PairsMap.empty bots_now in
-    print_newline();
-    for x =0 to lim_x-1 do
-      for y=0 to lim_y-1 do
+    let grouped =
+      List.fold_left
+        (fun acc bot ->
+          if PairsMap.mem bot acc then
+            PairsMap.add bot (1 + PairsMap.find bot acc) acc
+          else PairsMap.add bot 1 acc)
+        PairsMap.empty bots_now
+    in
+    print_newline ();
+    for x = 0 to lim_x - 1 do
+      for y = 0 to lim_y - 1 do
         match PairsMap.find_opt (x, y) grouped with
         | None -> print_char ' '
-        | Some(z) -> print_char (char_of_int (z + int_of_char '0'))
+        | Some z -> print_char (char_of_int (z + int_of_char '0'))
       done;
-      print_newline();
+      print_newline ()
     done;
-    print_newline();
+    print_newline ();
     print_string "good? ->";
     let s = read_line () in
-    if s = "y" then n else if s = "b" then draw_and_ask (n-1) else draw_and_ask (n+1)
+    if s = "y" then n
+    else if s = "b" then draw_and_ask (n - 1)
+    else draw_and_ask (n + 1)
   in
   draw_and_ask 1
 
