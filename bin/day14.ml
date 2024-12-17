@@ -5,13 +5,9 @@ let read_input () =
       Scanf.sscanf line "p=%d,%d v=%d,%d" (fun a b c d -> ((a, b), (c, d))))
   @@ Shared.F.read_lines file
 
-let modulo x y =
-  let result = x mod y in
-  if result >= 0 then result else result + y
-
 let simulate lim_x lim_y seconds ((pos_x, pos_y), (vec_x, vec_y)) =
-  let pos_x = modulo (pos_x + (seconds * vec_x)) lim_x in
-  let pos_y = modulo (pos_y + (seconds * vec_y)) lim_y in
+  let pos_x = Shared.M.modulo (pos_x + (seconds * vec_x)) lim_x in
+  let pos_y = Shared.M.modulo (pos_y + (seconds * vec_y)) lim_y in
   (pos_x, pos_y)
 
 let part1 () =
