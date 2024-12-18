@@ -82,7 +82,8 @@ let part2 () =
         let i = ref 0 in
         let x = ref None in
         while !x = None && !i < 8 do
-          if h = run_prog_for_next_didigt (acc + !i) then x := construct (acc + !i) t;
+          if h = run_prog_for_next_didigt (acc + !i) then
+            x := construct (acc + !i) t;
           i := !i + 1
         done;
         !x

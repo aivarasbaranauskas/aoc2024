@@ -8,9 +8,11 @@ module IntPair = struct
   let rem (x0, y0) (x1, y1) = (x0 - x1, y0 - y1)
   let mul (x0, y0) (x1, y1) = (x0 * x1, y0 * y1)
   let dic (x0, y0) (x1, y1) = (x0 / x1, y0 / y1)
+  let to_string (x, y) = Printf.sprintf "%d,%d" x y
 end
 
 module PairsSet = Set.Make (IntPair)
+module PairsMap = Map.Make (IntPair)
 
 module IntTriple = struct
   type t = int * int * int
