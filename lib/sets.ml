@@ -9,6 +9,10 @@ module IntPair = struct
   let mul (x0, y0) (x1, y1) = (x0 * x1, y0 * y1)
   let dic (x0, y0) (x1, y1) = (x0 / x1, y0 / y1)
   let to_string (x, y) = Printf.sprintf "%d,%d" x y
+  let length (x, y) = abs x + abs y
+  let norm (x, y) = (Stdlib.compare x 0),(Stdlib.compare y 0)
+  let print x = print_string @@ to_string x
+  let printl x = Printf.printf "%s\n" @@ to_string x
 end
 
 module PairsSet = Set.Make (IntPair)

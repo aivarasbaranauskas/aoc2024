@@ -101,3 +101,8 @@
  (public_name day20)
  (name day20)
  (libraries shared))
+
+(executable
+ (public_name day21)
+ (name day21)
+ (libraries shared))
