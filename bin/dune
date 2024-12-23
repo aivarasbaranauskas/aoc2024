@@ -111,3 +111,8 @@
  (public_name day22)
  (name day22)
  (libraries shared))
+
+(executable
+ (public_name day23)
+ (name day23)
+ (libraries shared ocamlgraph))
