@@ -65,14 +65,6 @@ let part1 () =
   let locks, keys = List.partition is_lock grouped in
   let locks = List.map transform_lock locks in
   let keys = List.map transform_key keys in
-  (* List.iter
-    (fun (a, b, c, d, e) -> Printf.printf "%d,%d,%d,%d,%d\n" a b c d e)
-    locks;
-  print_newline (); *)
-  (* List.iter
-    (fun (a, b, c, d, e) -> Printf.printf "%d,%d,%d,%d,%d\n" a b c d e)
-    keys; *)
-  (* print_newline (); *)
   List.fold_left
     (fun acc lock ->
       let filtered =
@@ -82,15 +74,8 @@ let part1 () =
             a<=5 && b <=5 && c <= 5 && d <= 5 && e <= 5)
           keys
       in
-      (* let a, b, c, d, e = lock in *)
-      (* Printf.printf "%d,%d,%d,%d,%d\n" a b c d e;
-      List.iter
-        (fun (a, b, c, d, e) -> Printf.printf "  %d,%d,%d,%d,%d\n" a b c d e)
-        filtered; *)
       acc + List.length filtered)
     0 locks
-(* let matches = PentSet.inter (PentSet.of_list keys) (PentSet.of_list locks) in
-  PentSet.cardinal matches *)
 
-let part2 () = 0
-let () = Printf.printf "Part 1: %d\nPart 2: %d\n" (part1 ()) (part2 ())
+
+let () = Printf.printf "%d\n" (part1 ())

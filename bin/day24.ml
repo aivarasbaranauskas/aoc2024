@@ -73,13 +73,6 @@ let int2bin =
     | None -> "0b0"
     | Some i -> "0b" ^ Bytes.sub_string buf i (int_size - i)
 
-(* 
-dmw XOR bfr -> z02
-  y02 XOR x02 -> bfr
-  qng OR hkm -> dmw
-    x01 AND y01 -> qng
-    hqt AND hfm -> hkm *)
-
 let part2 () =
   let wires, gates = read_input () in
   let rec analyze zWire =
